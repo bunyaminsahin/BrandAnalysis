@@ -1,0 +1,765 @@
+/* RESET */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+ul,
+ol {
+    list-style: none;
+}
+
+a {
+    color: inherit;
+    text-decoration: initial;
+}
+
+textarea {
+    font: inherit;
+    border: initial;
+    resize: none;
+    outline: initial;
+}
+
+button {
+    font: inherit;
+    border: initial;
+    outline: initial;
+    background-color: initial;
+}
+
+/* UTILITIES */
+.u-bold {
+    font-weight: 600;
+}
+
+.u-medium {
+    font-weight: 500;
+}
+
+.u-italic {
+    font-style: italic;
+}
+
+.u-transparent {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* KEYFRAMES */
+@keyframes intro {
+    0% {
+        transform: scale(0.8);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes spinner {
+    0% {
+        transform: translateX(-50%) rotate(0deg);
+    }
+    
+    100% {
+        transform: translateX(-50%) rotate(360deg);
+    }
+}
+
+/* Mobil Animasyonlar */
+@keyframes scrollRight {
+    0% {
+        transform: translateX(-30px);
+    }
+    50% {
+        transform: translateX(10px);
+    }
+    100% {
+        transform: translateX(-30px);
+    }
+}
+
+@keyframes scrollLeft {
+    0% {
+        transform: translateX(10px);
+    }
+    50% {
+        transform: translateX(-30px);
+    }
+    100% {
+        transform: translateX(10px);
+    }
+}
+
+/* BASE & RESPONSIVE HEIGHT DÜZENLEMESİ */
+.body {
+    background-image: linear-gradient(200deg, #654a86, #534292);
+    /* Dynamic Viewport Height (iOS/Android tarayıcı çubuklarına %100 tam uyum) */
+    min-height: 100vh;
+    min-height: 100dvh;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden;
+    scrollbar-width: none;  /* Firefox */
+}
+
+.body::-webkit-scrollbar {
+    display: none;
+}
+
+.body__container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    height: 850px;
+    max-height: calc(100vh - 40px);
+    max-height: calc(100dvh - 40px);
+}
+
+/* HEADINGS */
+.first-heading {
+    font-weight: 700;
+    font-size: 36px;
+    position: relative;
+    z-index: 1;
+    color: rgba(255, 255, 255, 0.93);
+}
+
+.first-heading::selection,
+.first-heading *::selection {
+    color: rgba(255, 255, 255, 0.85);
+    background-color: rgba(255, 255, 255, 0.05); 
+}
+
+/* APP */
+.app {
+    width: 715px;
+    height: 100%;
+    border-radius: 6px;
+    overflow: hidden;
+    animation: intro 0.4s;
+    display: flex;
+    flex-direction: column;
+}
+
+/* HEADER */
+.header {
+    height: 277px;
+    flex-shrink: 0;
+    background-color: #121618;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 999;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    box-shadow: rgba(12, 17, 21, 0.5) 0px 0px 50px;
+    padding-bottom: 3px;
+}
+
+.header__pattern {
+    position: absolute;
+    top: 0;
+    z-index: 0;
+}
+
+.header__pattern::selection {
+    background-color: initial;
+}
+
+/* LOGO */
+.logo {
+    display: inline-block;
+    height: 48px;
+}
+
+.logo::selection {
+    background-color: initial;
+}
+
+.logo__img {
+    height: 100%;
+    width: auto;
+    position: relative;
+    z-index: 1;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}
+
+/* TOAST */
+.toast {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: fit-content;
+    max-width: 600px;
+    padding: 20px 28px;
+    background-color: #ffffff;
+    color: #141518;
+    border: 2px solid #c48888;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.5;
+    text-align: center;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+}
+
+/* FORM */
+.form {
+    margin-top: 20px;
+    height: 123px;
+    width: 470px;
+    background-color: rgba(255, 255, 255, 0.04);
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+    transition: background-color 0.2s, box-shadow 0.2s;
+}
+
+.form:hover,
+.form:focus {
+    background-color: rgba(255, 255, 255, 0.055);
+}
+
+.form:focus-within {
+    outline: 2px solid rgba(255, 255, 255, 0.125);
+}
+
+.form--invalid {
+    box-shadow: 0 0 0 3px #8a3d2c;
+}
+
+.form--valid {
+    box-shadow: 0 0 0 3px #2c8a5e;
+}
+
+.form__textarea {
+    width: 100%;
+    height: 85px;
+    background-color: transparent;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 14px;
+    padding: 15px 20px;
+    caret-color: rgba(255, 255, 255, 0.25);
+}
+
+.form__textarea::selection {
+    color: rgba(255, 255, 255, 0.85);
+    background-color: rgba(255, 255, 255, 0.05); 
+}
+
+.form__textarea::placeholder {
+    opacity: 0;
+}
+
+.form__textarea:focus + .form__label,
+.form__textarea:not(:placeholder-shown) + .form__label {
+    opacity: 0;
+}
+
+.form__label {
+    position: absolute;
+    top: 13.5px;
+    left: 20px;
+    color: #fff;
+    opacity: 0.42;
+    pointer-events: none;
+}
+
+.form__label::selection,
+.form__label *::selection {
+    color: rgba(255, 255, 255, 0.85);
+    background-color: rgba(255, 255, 255, 0.05); 
+}
+
+.form__icon {
+    font-size: 12px;
+    margin-left: 4px;
+    color: #fff;
+    opacity: 0.5;
+}
+
+.form__bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    margin-top: -8px;
+}
+
+/* COUNTER */
+.counter {
+    font-weight: 500;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.25);
+    pointer-events: none;
+}
+
+.counter::selection, 
+.counter > *::selection {
+    color: rgba(255, 255, 255, 0.85);
+    background-color: rgba(255, 255, 255, 0.05); 
+}
+
+/* SUBMIT BTN */
+.submit-btn {
+    color: #161921;
+    font-size: 12px;
+    text-transform: uppercase;
+    padding: 4px 16px 9px;
+    border-radius: 500px;
+    font-weight: 600;
+    background-color: #fff;
+    cursor: pointer;
+    transition: all 0.2s;
+    backface-visibility: hidden;
+    transform: translateY(-2px) translateZ(0) rotate(0);
+}
+
+.submit-btn:hover,
+.submit-btn:focus {
+    transform: translateY(-2px) translateZ(0) scale(1.15);
+}
+
+.submit-btn:active {
+    transform: translateY(-2px) translateZ(0) scale(1.07);
+}
+
+.submit-btn:hover .submit-btn__text {
+    transform: translateY(2px) translateZ(0);
+}
+
+.submit-btn__text {
+    display: block;
+    transition: all 0.2s;
+    backface-visibility: hidden;
+    transform: translateY(2px) translateZ(0) rotate(0);
+}
+
+.submit-btn__text::selection {
+    color: rgba(0, 0, 0, 0.85);
+    background-color: rgba(0, 0, 0, 0.1); 
+}
+
+/* FEEDBACKS */
+.feedbacks {
+    flex-grow: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-color: #f7f8f9;
+    scrollbar-color: #979ca0 #dbdfe4;
+    scrollbar-width: thin;
+}
+
+.feedbacks::-webkit-scrollbar {
+    width: 7px;
+}
+
+.feedbacks::-webkit-scrollbar-track {
+    background-color: #dbdfe4;
+}
+
+.feedbacks::-webkit-scrollbar-thumb {
+    background-color: #979ca0;
+    transition: all 0.2s;
+}
+
+.feedbacks::-webkit-scrollbar-thumb:hover {
+    background-color: #787c80;
+}
+
+/* FEEDBACK ITEM */
+.feedback {
+    display: grid;
+    grid-template-columns: 40px 85px 6fr 1fr;
+    align-items: center;
+    height: 82px;
+    padding-right: 35px;
+    padding-left: 30px;
+    cursor: pointer;
+    border-bottom: 1px solid #e4e7eb;
+    transition: all 0.2s;
+    color: #3a3c42;
+}
+
+.feedback--expand {
+    height: 100px;
+    background-color: #fff;
+}
+
+.feedback--expand .feedback__text {
+    -webkit-line-clamp: initial !important;
+    -webkit-box-orient: initial !important;
+    overflow: initial !important;
+}
+
+.feedback *::selection {
+    background-color: rgba(0, 0, 0, 0.1); 
+}
+
+.feedback:hover {
+    background-color: #fff;
+}
+
+.feedback:hover .upvote,
+.feedback:hover .feedback__badge,
+.feedback:hover .feedback__content,
+.feedback:hover .feedback__date {
+    transform: translateX(5px);
+}
+
+.feedback__badge {
+    height: 49px;
+    width: 49px;
+    border-radius: 6px;
+    background-color: #564989;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 16px;
+    transition: all 0.2s;
+    margin-left: 20px;
+}
+
+.feedback:nth-child(6n+2) .feedback__badge {
+    background-color: #6D4989;
+}
+
+.feedback:nth-child(6n+3) .feedback__badge {
+    background-color: #3c7789;
+}
+
+.feedback:nth-child(6n+4) .feedback__badge {
+    background-color: #897749;
+}
+
+.feedback:nth-child(6n+5) .feedback__badge {
+    background-color: #4a8b6b;
+}
+
+.feedback:nth-child(6n+6) .feedback__badge {
+    background-color: #495789;
+}
+
+.feedback__letter {
+    font-size: 24px;
+    color: #fff;
+    font-weight: 700;
+    margin-right: -2px;
+}
+
+.feedback__content {
+    transition: all 0.2s;
+}
+
+.feedback__company {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+    color: #898D96;
+    margin-top: -1px;
+    display: block;
+    transition: all 0.2s;
+}
+
+.feedback__text {
+    color: #141518;
+    font-size: 13px;
+    margin-top: 1px;
+    transition: all 0.2s;
+    display: -webkit-box;
+    max-width: 100%;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.feedback__date {
+    font-size: 12px;
+    color: #898b92;
+    margin-left: auto;
+    transition: all 0.2s;
+}
+
+/* UPVOTE BTN */
+.upvote {
+    cursor: pointer;
+    height: 40px;
+    width: 40px;
+    border-radius: 6px;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.upvote:hover {
+    background-color: #F3F6F8;
+}
+
+.upvote:hover .upvote__icon,
+.upvote:hover .upvote__count {
+    color: #784a86;
+}
+
+.upvote:disabled .upvote__icon {
+    display: none;
+}
+
+.upvote:disabled {
+    pointer-events: none;
+}
+
+.upvote__icon {
+    color: #D7DBE2;
+    font-size: 19px;
+    display: block;
+    transition: all 0.2s;
+}
+
+.upvote__count {
+    color: #6C6F76;
+    font-size: 11px;
+    margin-top: -1px;
+}
+
+/* HASHTAGS (Masaüstü Sağ Konumlandırması) */
+.hashtags {
+    position: absolute;
+    right: -137px;
+    top: 0px;
+    display: flex;
+    flex-direction: column;
+}
+
+.hashtags__row {
+    display: flex;
+    flex-direction: column;
+}
+
+.hashtags__item {
+    max-width: max-content;
+    margin-bottom: 11px;
+}
+
+/* HASHTAG BUTTON */
+.hashtag {
+    align-self: flex-start;
+    font-size: 13px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.6);
+    padding: 7px 14px 9px;
+    background-color: rgba(255, 255, 255, 0.06);
+    border-radius: 500px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.hashtag:hover,
+.hashtag:focus {
+    color: #fff;
+    transform: scale(1.11);
+}
+
+.hashtag:active {
+    transform: scale(1.06);
+}
+
+.hashtag::selection {
+    background-color: rgba(255, 255, 255, 0.1); 
+}
+
+/* FOOTER (Masaüstü Sol Konumlandırması) */
+.footer {
+    position: absolute;
+    transform: rotate(-90deg);
+    transform-origin: left bottom;
+    left: -20px; /* Siyah karta (form/header) olan uzaklık: tam 20px */
+    bottom: 0;      /* Hizalamayı yukarıya, siyah kartın hizasına sabitler */
+    width: 277px;/* Header yüksekliğiyle birebir eşitler */
+}
+
+/* COPYRIGHT */
+.copyright {
+    color: #A6ADB5;
+    font-size: 11px;
+    line-height: 1.4;
+    display: block;
+}
+
+.copyright *::selection {
+    background-color: rgba(255, 255, 255, 0.1); 
+}
+
+.copyright__text {
+    opacity: 0.5;
+}
+
+.copyright__link {
+    text-decoration: underline;
+    word-break: break-all;
+}
+
+/* SPINNER */
+.spinner {
+    position: absolute;
+    left: 50%;
+    top: 46%;
+    transform: translateX(-50%) translateZ(0);
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    border-top: 7px solid #e2e7e9;
+    border-right: 7px solid #e2e7e9;
+    border-bottom: 7px solid #e2e7e9;
+    border-left: 7px solid #ccd1d3;
+    animation: spinner 1s infinite linear;
+}
+
+
+/* MEDIA QUERIES (RESPONSIVE DÜZENLEMELER) */
+
+/* KÜÇÜK YÜKSEKLİKLİ MASAÜSTÜ EKRANLARI */
+@media (max-height: 900px) and (min-width: 1051px) {
+    .body__container {
+        height: 92vh;
+        height: 92dvh;
+    }
+}
+
+/* TABLET VE MOBİL (1050px ve altı) */
+@media (max-width: 1050px) {
+    .body {
+        align-items: stretch;
+        padding: 10px 0;
+    }
+
+    .body__container {
+        flex-direction: column;
+        height: 100vh;
+        height: 100dvh;
+        max-height: 100dvh;
+        width: 100%;
+        max-width: 715px;
+        margin: 0 auto;
+        justify-content: space-between;
+    }
+
+    .app {
+        width: 100%;
+        flex-grow: 1;
+        min-height: 0; /* Flexbox içindeki scroll alanının doğru çalışmasını sağlar */
+    }
+
+    /* Mobilde En Üstteki Hashtags */
+    .hashtags {
+        position: static;
+        order: -1;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 6px;
+        padding: 8px 0;
+        overflow: hidden;
+    }
+
+    .hashtags__row {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        gap: 8px;
+        overflow-x: auto;
+        padding: 2px 15px;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .hashtags__row::-webkit-scrollbar {
+        display: none;
+    }
+
+    .hashtags__item {
+        margin-bottom: 0;
+        flex-shrink: 0;
+    }
+
+    .hashtags__row--top {
+        animation: scrollRight 6s ease-in-out infinite;
+    }
+
+    .hashtags__row--bottom {
+        animation: scrollLeft 6s ease-in-out infinite;
+    }
+
+    /* Mobilde En Alt Copyright */
+    .footer {
+        position: static;
+        transform: none;
+        width: 100%;
+        text-align: center;
+        padding: 12px 15px calc(12px + env(safe-area-inset-bottom)); /* iPhone Safe Area uyumu */
+        margin-top: auto;
+    }
+
+    .copyright__text {
+        opacity: 0.65;
+    }
+}
+
+/* MOBİL TELEFONLAR (525px ve altı) */
+@media (max-width: 525px) {
+    .body {
+        padding: 0;
+    }
+
+    .body__container {
+        border-radius: 0;
+    }
+
+    .app {
+        border-radius: 0;
+    }
+
+    .header {
+        padding: 25px 15px;
+        height: auto;
+    }
+
+    .first-heading {
+        font-size: 28px;
+        text-align: center;
+    }
+
+    .form {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .form__label {
+        font-size: 13px;
+        padding-right: 15px;
+    }
+
+    .feedback {
+        grid-template-columns: 40px 65px 1fr;
+        padding-right: 15px;
+        padding-left: 10px;
+    }
+
+    .feedback__date {
+        display: none;
+    }
+}

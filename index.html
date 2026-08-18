@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+    <link rel="preconnect" href="https://firebasestorage.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link rel="preload" as="image" href="https://firebasestorage.googleapis.com/v0/b/brandanalysis-12944.firebasestorage.app/o/logo.png?alt=media&token=f56510c3-1124-48d5-9ae5-fcab8237eb6f">
+    <link rel="icon" type="image/png" href="https://firebasestorage.googleapis.com/v0/b/brandanalysis-12944.firebasestorage.app/o/logo.png?alt=media&token=f56510c3-1124-48d5-9ae5-fcab8237eb6f">
+   
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="style.css">
+
+    <script src="toast.js"></script>
+    <script src="script.js" defer></script>
+
+    <title>Give Feedback</title>
+</head>
+
+<body class="body"> 
+
+    <div class="body__container">
+        <main class="app">
+            <header class="header">
+                <a href="." class="logo">
+                    <img src="https://firebasestorage.googleapis.com/v0/b/brandanalysis-12944.firebasestorage.app/o/logo.png?alt=media&token=f56510c3-1124-48d5-9ae5-fcab8237eb6f" alt="logo" class="logo__img">
+                </a>
+                <h1 class="first-heading">Give Feedback. <span class="u-italic u-transparent">Publicly.</span></h1>
+                <form action="#" class="form">
+                    <textarea class="form__textarea" id="textarea" spellcheck="false" maxlength="150" type="text"
+                        placeholder="Enter feedback"></textarea>
+                    <label for="textarea" class="form__label">Enter your feedback here, remember to <span
+                            class="u-medium">#hashtag</span> the company <i
+                            class="fa-solid fa-pen form__icon"></i></label>
+                    <div class="form__bottom">
+                        <p class="counter u-italic">150</p>
+                        <button class="submit-btn">
+                            <span class="submit-btn__text">Submit</span>
+                        </button>
+                    </div>
+                </form>
+            </header>
+
+            <ol class="feedbacks">
+                <!-- <div class="spinner"></div> -->
+            </ol>
+        </main>
+
+        <!-- HASHTAGS -->
+        <div class="hashtags">
+            <ul class="hashtags__row hashtags__row--top">
+                <li class="hashtags__item"><button class="hashtag">#AkBank</button></li>
+                <li class="hashtags__item"><button class="hashtag">#DenizBank</button></li>
+                <li class="hashtags__item"><button class="hashtag">#Garanti BBVA</button></li>
+                <li class="hashtags__item"><button class="hashtag">#Halkbank</button></li>
+                <li class="hashtags__item"><button class="hashtag">#QNB Bank</button></li>
+                <li class="hashtags__item"><button class="hashtag">#VakıfBank</button></li>
+                <li class="hashtags__item"><button class="hashtag">#TEB</button></li>
+                <li class="hashtags__item"><button class="hashtag">#Turk Exim Bank</button></li>
+                <li class="hashtags__item"><button class="hashtag">#Ziraat Bankası</button></li>
+            </ul>
+
+            <ul class="hashtags__row hashtags__row--bottom">
+                <li class="hashtags__item"><button class="hashtag">#Microsoft</button></li>
+                <li class="hashtags__item"><button class="hashtag">#Turkcell</button></li>
+                <li class="hashtags__item"><button class="hashtag">#Türk Telekom</button></li>
+                <li class="hashtags__item"><button class="hashtag">#Vodafone</button></li>
+                <li class="hashtags__item"><button class="hashtag">#Amazon</button></li>
+                <li class="hashtags__item"><button class="hashtag">#Trendyol</button></li>
+                <li class="hashtags__item"><button class="hashtag">#THY</button></li>
+                <li class="hashtags__item"><button class="hashtag">#Pegasus</button></li>
+            </ul>
+        </div>
+
+        <!-- FOOTER / COPYRIGHT -->
+        <footer class="footer">
+            <small class="copyright">
+                <p class="copyright__text">
+                    © <span class="u-bold">BrandAnalysis</span>. All rights reserved.
+                </p>
+                <p class="copyright__text">
+                    Created for banking & tech entities.<br>
+                    Contact: 
+                    <a href="mailto:developer.bunyamin.sahin@gmail.com" class="copyright__link">
+                        developer.bunyamin.sahin@gmail.com
+                    </a>
+                </p>
+            </small>
+        </footer>
+    </div>
+
+</body>
+
+</html>

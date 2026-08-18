@@ -1,0 +1,13 @@
+# Hassas ve Gizli Bilgiler (Veritabanı Şifreleri)
+.env
+*.env
+backend/.env
+
+# Bağımlılıklar (Yüklenen Paketler)
+node_modules/
+backend/node_modules/
+
+# Sistem ve Editör Dosyaları
+.DS_Store
+.vscode/
+*.log
