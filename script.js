@@ -216,7 +216,16 @@ const createFeedbackHTML = (id, company, badgeLetter, text, upvotes = 0) => {
 // ----------------------------------------------------
 
 const hashtagHandler = (event) => {
-    selectedHashtag = event.currentTarget.textContent.trim();
+    const clickedText = event.currentTarget.textContent.trim();
+
+    // #All Feedbacks butonuna basıldığında
+    if (clickedText === "#All Feedbacks") {
+        resetForm();
+        fetchFeedbacks(); // Tüm yorumları getir
+        return;
+    }
+
+    selectedHashtag = clickedText;
     companyWarningShown = false;
 
     textareaEl.readOnly = false;
@@ -226,7 +235,7 @@ const hashtagHandler = (event) => {
     moveCursorAfterHashtag();
     updateCounter();
 
-    // Seçilen şirkete göre listeyi filtrele (opsiyonel)
+    // Seçilen şirkete göre listeyi filtrele
     const company = selectedHashtag.substring(1).trim();
     fetchFeedbacks(company);
 };
@@ -358,7 +367,6 @@ const submitHandler = async (event) => {
     const badgeLetter = company.substring(0, 1).toUpperCase();
 
     try {
-        // Neon PostgreSQL Veritabanına POST İstegi At
         const response = await fetch(API_BASE_URL, {
             method: "POST",
             headers: {
@@ -375,7 +383,6 @@ const submitHandler = async (event) => {
 
         const newFeedback = await response.json();
 
-        // Gelen veriyi ekrana ekle
         const feedbackHTML = createFeedbackHTML(
             newFeedback.id,
             newFeedback.company,
