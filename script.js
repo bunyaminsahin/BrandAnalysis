@@ -219,103 +219,131 @@ const setupAutoScroll = () => {
     const hashtagRows = document.querySelectorAll(".hashtags__row");
 
     hashtagRows.forEach((row) => {
-        // Eğer zaten kopyalama yapıldıysa tekrar kopyalamayı önle
-        if (row.dataset.cloned === "true") return;
+        // 1. Orjinal elemanları ilk çalışmada yedekle (asla bozulmaz)
+        if (!row.dataset.originalHtml) {
+            row.dataset.originalHtml = row.innerHTML;
+        }
 
-        // Sadece mobil görünümdeyken (<= 1050px) kopyala ve çalıştır
-        if (window.innerWidth <= 1050) {
-            row.dataset.cloned = "true";
+        const isMobile = window.innerWidth <= 1050;
 
-            const originalItems = Array.from(row.children);
-            originalItems.forEach((item) => {
-                const clone = item.cloneNode(true);
-                row.appendChild(clone);
-            });
+        // 2. MASAÜSTÜ: Sadece saf/orjinal HTML'i bas ve çık
+        if (!isMobile) {
+            if (row.dataset.isCloned === "true") {
+                row.innerHTML = row.dataset.originalHtml;
+                row.dataset.isCloned = "false";
+            }
+            return;
+        }
 
-            const speed = 0.18; 
-            let direction = row.classList.contains("hashtags__row--top") ? 1 : -1;
-            let currentScroll = row.scrollLeft;
+        // 3. MOBİL: Eğer zaten kopyalanmışsa tekrar kopyalama yapma
+        if (isMobile && row.dataset.isCloned === "true") {
+            return;
+        }
 
-            let isInteracting = false;
-            let resumeTimeout = null;
+        // Mobil ilk yükleme: Orjinal HTML'i restore et ve tam 1 kez kopyala
+        row.innerHTML = row.dataset.originalHtml;
+        row.dataset.isCloned = "true";
 
-            const animate = () => {
-                if (!isInteracting) {
-                    currentScroll += speed * direction;
+        const originalItems = Array.from(row.children);
+        originalItems.forEach((item) => {
+            const clone = item.cloneNode(true);
+            row.appendChild(clone);
+        });
 
-                    const maxScroll = (row.scrollWidth - row.clientWidth) / 2;
+        const speed = 0.18; 
+        let direction = row.classList.contains("hashtags__row--top") ? 1 : -1;
+        let currentScroll = row.scrollLeft;
 
-                    if (direction > 0 && currentScroll >= maxScroll) {
-                        currentScroll = 0;
-                    } else if (direction < 0 && currentScroll <= 0) {
-                        currentScroll = maxScroll;
-                    }
+        let isInteracting = false;
+        let resumeTimeout = null;
 
-                    row.scrollLeft = currentScroll;
-                } else {
-                    currentScroll = row.scrollLeft;
+        const animate = () => {
+            // Masaüstüne geçilirse animasyon döngüsünü kır
+            if (window.innerWidth > 1050) return;
+
+            if (!isInteracting) {
+                currentScroll += speed * direction;
+
+                const maxScroll = (row.scrollWidth - row.clientWidth) / 2;
+
+                if (direction > 0 && currentScroll >= maxScroll) {
+                    currentScroll = 0;
+                } else if (direction < 0 && currentScroll <= 0) {
+                    currentScroll = maxScroll;
                 }
 
-                requestAnimationFrame(animate);
-            };
-
-            const handleInteractionStart = () => {
-                isInteracting = true;
-                if (resumeTimeout) clearTimeout(resumeTimeout);
-            };
-
-            const handleInteractionEnd = () => {
-                if (resumeTimeout) clearTimeout(resumeTimeout);
-                resumeTimeout = setTimeout(() => {
-                    currentScroll = row.scrollLeft;
-                    isInteracting = false;
-                }, 1200);
-            };
-
-            row.addEventListener("touchstart", handleInteractionStart, { passive: true });
-            row.addEventListener("touchend", handleInteractionEnd, { passive: true });
-            row.addEventListener("scroll", () => {
-                if (isInteracting) currentScroll = row.scrollLeft;
-            }, { passive: true });
-
-            let isMouseDown = false;
-            let startX = 0;
-            let startScrollLeft = 0;
-
-            row.addEventListener("mousedown", (e) => {
-                isMouseDown = true;
-                startX = e.pageX - row.offsetLeft;
-                startScrollLeft = row.scrollLeft;
-                handleInteractionStart();
-            });
-
-            row.addEventListener("mousemove", (e) => {
-                if (!isMouseDown) return;
-                e.preventDefault();
-                const x = e.pageX - row.offsetLeft;
-                const walk = (x - startX) * 1.2;
-                row.scrollLeft = startScrollLeft - walk;
+                row.scrollLeft = currentScroll;
+            } else {
                 currentScroll = row.scrollLeft;
-            });
+            }
 
-            row.addEventListener("mouseup", () => {
-                isMouseDown = false;
-                handleInteractionEnd();
-            });
+            requestAnimationFrame(animate);
+        };
 
-            row.addEventListener("mouseleave", () => {
-                isMouseDown = false;
-                handleInteractionEnd();
-            });
+        const handleInteractionStart = () => {
+            isInteracting = true;
+            if (resumeTimeout) clearTimeout(resumeTimeout);
+        };
 
-            animate();
-        }
+        const handleInteractionEnd = () => {
+            if (resumeTimeout) clearTimeout(resumeTimeout);
+            resumeTimeout = setTimeout(() => {
+                currentScroll = row.scrollLeft;
+                isInteracting = false;
+            }, 1200);
+        };
+
+        row.addEventListener("touchstart", handleInteractionStart, { passive: true });
+        row.addEventListener("touchend", handleInteractionEnd, { passive: true });
+        row.addEventListener("scroll", () => {
+            if (isInteracting) currentScroll = row.scrollLeft;
+        }, { passive: true });
+
+        let isMouseDown = false;
+        let startX = 0;
+        let startScrollLeft = 0;
+
+        row.addEventListener("mousedown", (e) => {
+            isMouseDown = true;
+            startX = e.pageX - row.offsetLeft;
+            startScrollLeft = row.scrollLeft;
+            handleInteractionStart();
+        });
+
+        row.addEventListener("mousemove", (e) => {
+            if (!isMouseDown) return;
+            e.preventDefault();
+            const x = e.pageX - row.offsetLeft;
+            const walk = (x - startX) * 1.2;
+            row.scrollLeft = startScrollLeft - walk;
+            currentScroll = row.scrollLeft;
+        });
+
+        row.addEventListener("mouseup", () => {
+            isMouseDown = false;
+            handleInteractionEnd();
+        });
+
+        row.addEventListener("mouseleave", () => {
+            isMouseDown = false;
+            handleInteractionEnd();
+        });
+
+        animate();
     });
 };
 
-// Sayfa yüklendiğinde ve ekran boyutu değiştiğinde çalıştır
+// Sayfa ilk açıldığında çalıştır
 setupAutoScroll();
-window.addEventListener("resize", setupAutoScroll);
+
+// Resize tetiklenmesini 'debounce' ederek katlanmasını engelle
+let resizeTimer;
+window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+        setupAutoScroll();
+    }, 100);
+});
 
 // ----------------------------------------------------
 // EVENT LISTENERS (OLAY DİNLEYİCİLERİ)
