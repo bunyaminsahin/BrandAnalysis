@@ -219,102 +219,103 @@ const setupAutoScroll = () => {
     const hashtagRows = document.querySelectorAll(".hashtags__row");
 
     hashtagRows.forEach((row) => {
-        // Sonsuz döngü için elemanları kopyalama
-        const originalItems = Array.from(row.children);
-        originalItems.forEach((item) => {
-            const clone = item.cloneNode(true);
-            row.appendChild(clone);
-        });
+        // Eğer zaten kopyalama yapıldıysa tekrar kopyalamayı önle
+        if (row.dataset.cloned === "true") return;
 
-        // 🎯 HIZ AYARI: 
-        // 0.15 veya 0.20 istediğiniz kadar YAVAŞ ve AKICI kaydırma sağlar.
-        const speed = 0.18; 
-        let direction = row.classList.contains("hashtags__row--top") ? 1 : -1;
-        
-        // Ondalıklı pozisyonu saklayan değişken (Piksel yuvarlama sorununu çözen kısım)
-        let currentScroll = row.scrollLeft;
+        // Sadece mobil görünümdeyken (<= 1050px) kopyala ve çalıştır
+        if (window.innerWidth <= 1050) {
+            row.dataset.cloned = "true";
 
-        let isInteracting = false;
-        let resumeTimeout = null;
+            const originalItems = Array.from(row.children);
+            originalItems.forEach((item) => {
+                const clone = item.cloneNode(true);
+                row.appendChild(clone);
+            });
 
-        const animate = () => {
-            if (!isInteracting) {
-                // Pozisyonu hassas float olarak artır/azalt
-                currentScroll += speed * direction;
+            const speed = 0.18; 
+            let direction = row.classList.contains("hashtags__row--top") ? 1 : -1;
+            let currentScroll = row.scrollLeft;
 
-                const maxScroll = (row.scrollWidth - row.clientWidth) / 2;
+            let isInteracting = false;
+            let resumeTimeout = null;
 
-                if (direction > 0 && currentScroll >= maxScroll) {
-                    currentScroll = 0;
-                } else if (direction < 0 && currentScroll <= 0) {
-                    currentScroll = maxScroll;
+            const animate = () => {
+                if (!isInteracting) {
+                    currentScroll += speed * direction;
+
+                    const maxScroll = (row.scrollWidth - row.clientWidth) / 2;
+
+                    if (direction > 0 && currentScroll >= maxScroll) {
+                        currentScroll = 0;
+                    } else if (direction < 0 && currentScroll <= 0) {
+                        currentScroll = maxScroll;
+                    }
+
+                    row.scrollLeft = currentScroll;
+                } else {
+                    currentScroll = row.scrollLeft;
                 }
 
-                // Ondalıklı pozisyonu DOM'a aktar
-                row.scrollLeft = currentScroll;
-            } else {
-                // Kullanıcı elle kaydırdığında arka plandaki pozisyonu güncelle
+                requestAnimationFrame(animate);
+            };
+
+            const handleInteractionStart = () => {
+                isInteracting = true;
+                if (resumeTimeout) clearTimeout(resumeTimeout);
+            };
+
+            const handleInteractionEnd = () => {
+                if (resumeTimeout) clearTimeout(resumeTimeout);
+                resumeTimeout = setTimeout(() => {
+                    currentScroll = row.scrollLeft;
+                    isInteracting = false;
+                }, 1200);
+            };
+
+            row.addEventListener("touchstart", handleInteractionStart, { passive: true });
+            row.addEventListener("touchend", handleInteractionEnd, { passive: true });
+            row.addEventListener("scroll", () => {
+                if (isInteracting) currentScroll = row.scrollLeft;
+            }, { passive: true });
+
+            let isMouseDown = false;
+            let startX = 0;
+            let startScrollLeft = 0;
+
+            row.addEventListener("mousedown", (e) => {
+                isMouseDown = true;
+                startX = e.pageX - row.offsetLeft;
+                startScrollLeft = row.scrollLeft;
+                handleInteractionStart();
+            });
+
+            row.addEventListener("mousemove", (e) => {
+                if (!isMouseDown) return;
+                e.preventDefault();
+                const x = e.pageX - row.offsetLeft;
+                const walk = (x - startX) * 1.2;
+                row.scrollLeft = startScrollLeft - walk;
                 currentScroll = row.scrollLeft;
-            }
+            });
 
-            requestAnimationFrame(animate);
-        };
+            row.addEventListener("mouseup", () => {
+                isMouseDown = false;
+                handleInteractionEnd();
+            });
 
-        const handleInteractionStart = () => {
-            isInteracting = true;
-            if (resumeTimeout) clearTimeout(resumeTimeout);
-        };
+            row.addEventListener("mouseleave", () => {
+                isMouseDown = false;
+                handleInteractionEnd();
+            });
 
-        const handleInteractionEnd = () => {
-            if (resumeTimeout) clearTimeout(resumeTimeout);
-            resumeTimeout = setTimeout(() => {
-                currentScroll = row.scrollLeft; // Kullanıcının bıraktığı pozisyondan devam et
-                isInteracting = false;
-            }, 1200);
-        };
-
-        // Dokunma (Touch) ve Fare Etkileşimleri
-        row.addEventListener("touchstart", handleInteractionStart, { passive: true });
-        row.addEventListener("touchend", handleInteractionEnd, { passive: true });
-        row.addEventListener("scroll", () => {
-            if (isInteracting) currentScroll = row.scrollLeft;
-        }, { passive: true });
-
-        let isMouseDown = false;
-        let startX = 0;
-        let startScrollLeft = 0;
-
-        row.addEventListener("mousedown", (e) => {
-            isMouseDown = true;
-            startX = e.pageX - row.offsetLeft;
-            startScrollLeft = row.scrollLeft;
-            handleInteractionStart();
-        });
-
-        row.addEventListener("mousemove", (e) => {
-            if (!isMouseDown) return;
-            e.preventDefault();
-            const x = e.pageX - row.offsetLeft;
-            const walk = (x - startX) * 1.2;
-            row.scrollLeft = startScrollLeft - walk;
-            currentScroll = row.scrollLeft;
-        });
-
-        row.addEventListener("mouseup", () => {
-            isMouseDown = false;
-            handleInteractionEnd();
-        });
-
-        row.addEventListener("mouseleave", () => {
-            isMouseDown = false;
-            handleInteractionEnd();
-        });
-
-        animate();
+            animate();
+        }
     });
 };
 
+// Sayfa yüklendiğinde ve ekran boyutu değiştiğinde çalıştır
 setupAutoScroll();
+window.addEventListener("resize", setupAutoScroll);
 
 // ----------------------------------------------------
 // EVENT LISTENERS (OLAY DİNLEYİCİLERİ)
