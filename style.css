@@ -671,7 +671,7 @@ button {
         flex-direction: column;
         width: 100%;
         gap: 6px;
-        padding: 8px 0;
+        padding: 4px 0 15px 0;
         overflow: hidden;
     }
 
@@ -722,7 +722,7 @@ button {
 }
 
 /* MOBİL TELEFONLAR (525px ve altı) */
-@media (max-width: 525px) {
+@media (max-width: 500px) {
     .body {
         padding: 0;
     }
@@ -736,7 +736,7 @@ button {
     }
 
     .header {
-        padding: 15px 12px;
+        padding: 5px 8px;
         height: auto;
     }
 
