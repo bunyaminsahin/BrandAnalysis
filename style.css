@@ -69,25 +69,6 @@ button {
     }
 }
 
-/* Mobil Yumuşak Kayma Animasyonları */
-@keyframes scrollRightContinuous {
-    0% {
-        transform: translateX(0);
-    }
-    100% {
-        transform: translateX(calc(-100% + 100vw));
-    }
-}
-
-@keyframes scrollLeftContinuous {
-    0% {
-        transform: translateX(calc(-100% + 100vw));
-    }
-    100% {
-        transform: translateX(0);
-    }
-}
-
 /* BASE & RESPONSIVE HEIGHT DÜZENLEMESİ */
 .body {
     background-image: linear-gradient(200deg, #654a86, #534292);
@@ -450,7 +431,7 @@ button {
 
 .feedback__content {
     transition: all 0.2s;
-    min-width: 0; /* Text truncation için zorunlu */
+    min-width: 0;
 }
 
 .feedback__company {
@@ -547,22 +528,27 @@ button {
     margin-bottom: 11px;
 }
 
-/* HASHTAG BUTTON */
+/* HASHTAG BUTTON (Genel Oval Yapı) */
 .hashtag {
-    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     font-size: 13px;
     font-weight: 400;
-    color: rgba(255, 255, 255, 0.6);
-    padding: 7px 14px 9px;
-    background-color: rgba(255, 255, 255, 0.06);
-    border-radius: 500px;
+    color: rgba(255, 255, 255, 0.7);
+    padding: 8px 16px;
+    background-color: rgba(255, 255, 255, 0.08);
+    border-radius: 9999px; /* Tam Oval kapsül yapısı */
     cursor: pointer;
-    transition: all 0.2s;
+    transition: transform 0.2s, background-color 0.2s, color 0.2s, opacity 0.2s;
     white-space: nowrap;
+    user-select: none;
+    line-height: 1;
+    box-sizing: border-box;
 }
 
 .hashtag--all {
-    background-color: rgba(255, 255, 255, 0.18);
+    background-color: rgba(255, 255, 255, 0.22);
     color: #fff;
     font-weight: 600;
 }
@@ -570,11 +556,12 @@ button {
 .hashtag:hover,
 .hashtag:focus {
     color: #fff;
-    transform: scale(1.11);
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: scale(1.05);
 }
 
 .hashtag:active {
-    transform: scale(1.06);
+    transform: scale(1.02);
 }
 
 .hashtag::selection {
@@ -595,8 +582,9 @@ button {
 .copyright {
     color: #A6ADB5;
     font-size: 11px;
-    line-height: 1.4;
+    line-height: 1.2;
     display: block;
+    margin: 0;
 }
 
 .copyright *::selection {
@@ -628,10 +616,8 @@ button {
     animation: spinner 1s infinite linear;
 }
 
-
 /* MEDIA QUERIES (RESPONSIVE DÜZENLEMELER) */
 
-/* KÜÇÜK YÜKSEKLİKLİ MASAÜSTÜ EKRANLARI */
 @media (max-height: 900px) and (min-width: 1051px) {
     .body__container {
         height: 92vh;
@@ -643,7 +629,7 @@ button {
 @media (max-width: 1050px) {
     .body {
         align-items: stretch;
-        padding: 10px 0;
+        padding: 0;
     }
 
     .body__container {
@@ -655,65 +641,85 @@ button {
         max-width: 715px;
         margin: 0 auto;
         justify-content: space-between;
+        padding-bottom: calc(28px + env(safe-area-inset-bottom));
     }
 
     .app {
         width: 100%;
         flex-grow: 1;
         min-height: 0;
+        overflow: hidden;
     }
 
-    /* Mobilde En Üstteki Hashtags */
+    /* Mobilde Hashtags Kapsayıcısı */
     .hashtags {
         position: static;
         order: -1;
         display: flex;
         flex-direction: column;
         width: 100%;
-        gap: 6px;
-        padding: 4px 0 15px 0;
+        gap: 0px;
+        padding: 2px 0;
         overflow: hidden;
     }
 
+    /* KAPSAYICI SATIR: Dikey Padding Artırılarak Alt/Üst Kesilmesi Tamamen Engellendi */
     .hashtags__row {
         display: flex;
         flex-direction: row;
-        width: max-content;
+        align-items: center; /* Butonları dikeyde tam ortalar */
+        width: 100%;
         gap: 8px;
-        padding: 2px 15px;
+        padding: 6px 15px; /* Alt kavislerin rahat görünmesi için 10px dikey alan */
+        overflow-x: auto;
+        overflow-y: hidden;
         scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+        touch-action: pan-x;
+        cursor: grab;
+        transition: transform 0.25s ease, opacity 0.25s ease;
     }
 
     .hashtags__row::-webkit-scrollbar {
         display: none;
     }
 
+    .hashtags__row:active {
+        cursor: grabbing;
+    }
+
+    .hashtags__row.is-interacting {
+        transform: scale(1.01);
+        opacity: 0.95;
+    }
+
     .hashtags__item {
-        margin-bottom: 0;
+        margin-bottom: 0 !important; /* Masaüstünden kalan margin sıfırlandı */
         flex-shrink: 0;
+        display: flex;
+        align-items: center;
     }
 
-    /* Hız ayarı isteğinize göre yavaşlatıldı (15s), alternate ile kesintisiz dönüşlü kayma */
-    .hashtags__row--top {
-        animation: scrollRightContinuous 65s linear infinite alternate;
-    }
-
-    .hashtags__row--bottom {
-        animation: scrollLeftContinuous 65s linear infinite alternate;
-    }
-
-    /* Mobilde En Alt Copyright */
+    /* Mobilde Sabit Copyright (Safe Area Destekli) */
     .footer {
-        position: static;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        right: 0;
         transform: none;
         width: 100%;
         text-align: center;
-        padding: 10px 15px calc(10px + env(safe-area-inset-bottom));
-        margin-top: auto;
+        background-color: rgb(82, 64, 133);
+        padding-top: 4px;
+        padding-bottom: calc(4px + env(safe-area-inset-bottom));
+        padding-left: 15px;
+        padding-right: 15px;
+        z-index: 1000;
+        box-shadow: 0 -2px 10px rgba(82, 64, 133, 0.2);
     }
 
     .copyright__text--details {
-        display: none; /* Mobilde detayları gizle, sadece copyright kalsın */
+        display: none;
     }
 
     .copyright__text {
@@ -721,12 +727,8 @@ button {
     }
 }
 
-/* MOBİL TELEFONLAR (525px ve altı) */
+/* MOBİL TELEFONLAR (500px ve altı) */
 @media (max-width: 500px) {
-    .body {
-        padding: 0;
-    }
-
     .body__container {
         border-radius: 0;
     }
@@ -736,18 +738,16 @@ button {
     }
 
     .header {
-        padding: 5px 8px;
+        padding: 8px;
         height: auto;
     }
 
-    /* Logo Büyüklüğü 10'dan 6'ya indirildi (%60) */
     .logo {
         height: 29px;
     }
 
-    /* Give Feedback. Publicly. Tek satırda ve Punto 10'dan 8'e düşürüldü */
     .first-heading {
-        font-size: 21px;
+        font-size: 20px;
         text-align: center;
         white-space: nowrap;
         margin-top: 4px;
@@ -756,7 +756,7 @@ button {
     .form {
         width: 100%;
         max-width: 100%;
-        margin-top: 12px;
+        margin-top: 10px;
     }
 
     .form__label {
@@ -764,7 +764,6 @@ button {
         padding-right: 15px;
     }
 
-    /* Feedback Yazılarının Birbirine Girmesini Önleyen Mobil Grid Düzeni */
     .feedback {
         grid-template-columns: 36px 42px 1fr;
         gap: 10px;

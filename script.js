@@ -212,6 +212,111 @@ const createFeedbackHTML = (id, company, badgeLetter, text, upvotes = 0) => {
 };
 
 // ----------------------------------------------------
+// MOBİL AKICI SÜRÜKLEME VE OTOMATİK KAYDIRMA MANTIĞI
+// ----------------------------------------------------
+
+const setupAutoScroll = () => {
+    const hashtagRows = document.querySelectorAll(".hashtags__row");
+
+    hashtagRows.forEach((row) => {
+        // Sonsuz döngü için elemanları kopyalama
+        const originalItems = Array.from(row.children);
+        originalItems.forEach((item) => {
+            const clone = item.cloneNode(true);
+            row.appendChild(clone);
+        });
+
+        // 🎯 HIZ AYARI: 
+        // 0.15 veya 0.20 istediğiniz kadar YAVAŞ ve AKICI kaydırma sağlar.
+        const speed = 0.18; 
+        let direction = row.classList.contains("hashtags__row--top") ? 1 : -1;
+        
+        // Ondalıklı pozisyonu saklayan değişken (Piksel yuvarlama sorununu çözen kısım)
+        let currentScroll = row.scrollLeft;
+
+        let isInteracting = false;
+        let resumeTimeout = null;
+
+        const animate = () => {
+            if (!isInteracting) {
+                // Pozisyonu hassas float olarak artır/azalt
+                currentScroll += speed * direction;
+
+                const maxScroll = (row.scrollWidth - row.clientWidth) / 2;
+
+                if (direction > 0 && currentScroll >= maxScroll) {
+                    currentScroll = 0;
+                } else if (direction < 0 && currentScroll <= 0) {
+                    currentScroll = maxScroll;
+                }
+
+                // Ondalıklı pozisyonu DOM'a aktar
+                row.scrollLeft = currentScroll;
+            } else {
+                // Kullanıcı elle kaydırdığında arka plandaki pozisyonu güncelle
+                currentScroll = row.scrollLeft;
+            }
+
+            requestAnimationFrame(animate);
+        };
+
+        const handleInteractionStart = () => {
+            isInteracting = true;
+            if (resumeTimeout) clearTimeout(resumeTimeout);
+        };
+
+        const handleInteractionEnd = () => {
+            if (resumeTimeout) clearTimeout(resumeTimeout);
+            resumeTimeout = setTimeout(() => {
+                currentScroll = row.scrollLeft; // Kullanıcının bıraktığı pozisyondan devam et
+                isInteracting = false;
+            }, 1200);
+        };
+
+        // Dokunma (Touch) ve Fare Etkileşimleri
+        row.addEventListener("touchstart", handleInteractionStart, { passive: true });
+        row.addEventListener("touchend", handleInteractionEnd, { passive: true });
+        row.addEventListener("scroll", () => {
+            if (isInteracting) currentScroll = row.scrollLeft;
+        }, { passive: true });
+
+        let isMouseDown = false;
+        let startX = 0;
+        let startScrollLeft = 0;
+
+        row.addEventListener("mousedown", (e) => {
+            isMouseDown = true;
+            startX = e.pageX - row.offsetLeft;
+            startScrollLeft = row.scrollLeft;
+            handleInteractionStart();
+        });
+
+        row.addEventListener("mousemove", (e) => {
+            if (!isMouseDown) return;
+            e.preventDefault();
+            const x = e.pageX - row.offsetLeft;
+            const walk = (x - startX) * 1.2;
+            row.scrollLeft = startScrollLeft - walk;
+            currentScroll = row.scrollLeft;
+        });
+
+        row.addEventListener("mouseup", () => {
+            isMouseDown = false;
+            handleInteractionEnd();
+        });
+
+        row.addEventListener("mouseleave", () => {
+            isMouseDown = false;
+            handleInteractionEnd();
+        });
+
+        animate();
+    });
+};
+
+setupAutoScroll();
+
+// ----------------------------------------------------
 // EVENT LISTENERS (OLAY DİNLEYİCİLERİ)
 // ----------------------------------------------------
 
@@ -221,7 +326,7 @@ const hashtagHandler = (event) => {
     // #All Feedbacks butonuna basıldığında
     if (clickedText === "#All Feedbacks") {
         resetForm();
-        fetchFeedbacks(); // Tüm yorumları getir
+        fetchFeedbacks();
         return;
     }
 
@@ -240,8 +345,12 @@ const hashtagHandler = (event) => {
     fetchFeedbacks(company);
 };
 
-hashtagEls.forEach((hashtagEl) => {
-    hashtagEl.addEventListener("click", hashtagHandler);
+// Dinamik kopyalanan hashtag butonlarını da kapsayacak şekilde event delegation kullanımı
+document.addEventListener("click", (event) => {
+    const hashtagBtn = event.target.closest(".hashtag");
+    if (hashtagBtn) {
+        hashtagHandler({ currentTarget: hashtagBtn });
+    }
 });
 
 textareaEl.addEventListener("focus", () => {
