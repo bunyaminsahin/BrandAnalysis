@@ -355,7 +355,7 @@ button {
 /* FEEDBACK ITEM */
 .feedback {
     display: grid;
-    grid-template-columns: 40px 50px 1fr 60px;
+    grid-template-columns: 40px 50px 1fr 75px;
     align-items: center;
     gap: 12px;
     min-height: 82px;
@@ -451,9 +451,9 @@ button {
     font-size: 13px;
     line-height: 1.4;
     transition: all 0.2s;
-    display: block;                  /* -webkit-box yerine normal blok yapıyoruz */
+    display: block;                  
     max-width: 100%;
-    overflow: visible;              /* Gizlemeyi kaldırıyoruz */
+    overflow: visible;              
     word-break: break-word;
 }
 
@@ -462,6 +462,8 @@ button {
     color: #898b92;
     text-align: right;
     transition: all 0.2s;
+    white-space: normal;
+    line-height: 1.2;
 }
 
 /* UPVOTE BTN */
@@ -537,7 +539,7 @@ button {
     color: rgba(255, 255, 255, 0.7);
     padding: 8px 16px;
     background-color: rgba(255, 255, 255, 0.08);
-    border-radius: 9999px; /* Tam Oval kapsül yapısı */
+    border-radius: 9999px; 
     cursor: pointer;
     transition: transform 0.2s, background-color 0.2s, color 0.2s, opacity 0.2s;
     white-space: nowrap;
@@ -662,14 +664,13 @@ button {
         overflow: hidden;
     }
 
-    /* KAPSAYICI SATIR: Dikey Padding Artırılarak Alt/Üst Kesilmesi Tamamen Engellendi */
     .hashtags__row {
         display: flex;
         flex-direction: row;
-        align-items: center; /* Butonları dikeyde tam ortalar */
+        align-items: center; 
         width: 100%;
         gap: 8px;
-        padding: 6px 15px; /* Alt kavislerin rahat görünmesi için 10px dikey alan */
+        padding: 6px 15px; 
         overflow-x: auto;
         overflow-y: hidden;
         scrollbar-width: none;
@@ -693,13 +694,13 @@ button {
     }
 
     .hashtags__item {
-        margin-bottom: 0 !important; /* Masaüstünden kalan margin sıfırlandı */
+        margin-bottom: 0 !important; 
         flex-shrink: 0;
         display: flex;
         align-items: center;
     }
 
-    /* Mobilde Sabit Copyright (Safe Area Destekli) */
+    /* Mobilde Sabit Copyright */
     .footer {
         position: fixed;
         left: 0;
@@ -762,22 +763,26 @@ button {
         padding-right: 15px;
     }
 
+    /* Grid kolon yapısını 4 sütuna çıkararak tarihi dahil ediyoruz */
     .feedback {
-        grid-template-columns: 36px 40px 1fr;
-        gap: 8px;
-        padding: 4px 4px;
+        grid-template-columns: 32px 38px 1fr 58px;
+        gap: 6px;
+        padding: 8px 10px;
     }
 
     .feedback__badge {
-        height: 42px;
-        width: 42px;
+        height: 38px;
+        width: 38px;
     }
 
     .feedback__letter {
-        font-size: 20px;
+        font-size: 18px;
     }
 
+    /* Görünürlüğü açıp mobil yazı boyutunu ayarlıyoruz */
     .feedback__date {
-        display: none;
+        display: block;
+        font-size: 10px;
+        line-height: 1.1;
     }
 }
