@@ -19,6 +19,26 @@ textareaEl.readOnly = true;
 textareaEl.value = "";
 
 // ----------------------------------------------------
+// TARİH BİÇİMLENDİRME YARDIMCISI
+// ----------------------------------------------------
+
+const formatDate = (dateString) => {
+    const date = dateString ? new Date(dateString) : new Date();
+    if (isNaN(date.getTime())) {
+        return new Date().toLocaleDateString("en-GB", {
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+        });
+    }
+    return date.toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+    });
+};
+
+// ----------------------------------------------------
 // API İŞLEMLERİ (FETCH / POST / PATCH)
 // ----------------------------------------------------
 
@@ -43,7 +63,8 @@ const fetchFeedbacks = async (companyName = "") => {
                 item.company,
                 item.badge_letter,
                 item.text,
-                item.upvotes
+                item.upvotes,
+                item.created_at || item.createdAt
             );
             feedbackListEl.insertAdjacentHTML("beforeend", feedbackHTML);
         });
@@ -182,7 +203,9 @@ const resetForm = () => {
     submitBtnEl.blur();
 };
 
-const createFeedbackHTML = (id, company, badgeLetter, text, upvotes = 0) => {
+const createFeedbackHTML = (id, company, badgeLetter, text, upvotes = 0, dateString = null) => {
+    const formattedDate = formatDate(dateString);
+
     return `
         <li class="feedback" data-id="${id}">
             <button class="upvote">
@@ -206,28 +229,28 @@ const createFeedbackHTML = (id, company, badgeLetter, text, upvotes = 0) => {
                 </p>
             </div>
 
-            <p class="feedback__date">NEW</p>
+            <p class="feedback__date">${formattedDate}</p>
         </li>
     `;
 };
 
 // ----------------------------------------------------
-// MOBİL AKICI SÜRÜKLEME VE OTOMATİK KAYDIRMA MANTIĞI
+// MOBİL / TABLET AKICI SÜRÜKLEME VE OTOMATİK KAYDIRMA MANTIĞI
 // ----------------------------------------------------
 
 const setupAutoScroll = () => {
     const hashtagRows = document.querySelectorAll(".hashtags__row");
 
     hashtagRows.forEach((row) => {
-        // 1. Orjinal elemanları ilk çalışmada yedekle (asla bozulmaz)
         if (!row.dataset.originalHtml) {
             row.dataset.originalHtml = row.innerHTML;
         }
 
-        const isMobile = window.innerWidth <= 1050;
+        // Tablet landscape ve küçük ekran tespiti
+        const isMobileOrTablet = window.innerWidth <= 1050 || window.innerHeight <= 600;
 
-        // 2. MASAÜSTÜ: Sadece saf/orjinal HTML'i bas ve çık
-        if (!isMobile) {
+        // MASAÜSTÜ: Sadece saf/orjinal HTML'i bas ve çık
+        if (!isMobileOrTablet) {
             if (row.dataset.isCloned === "true") {
                 row.innerHTML = row.dataset.originalHtml;
                 row.dataset.isCloned = "false";
@@ -235,12 +258,10 @@ const setupAutoScroll = () => {
             return;
         }
 
-        // 3. MOBİL: Eğer zaten kopyalanmışsa tekrar kopyalama yapma
-        if (isMobile && row.dataset.isCloned === "true") {
+        if (isMobileOrTablet && row.dataset.isCloned === "true") {
             return;
         }
 
-        // Mobil ilk yükleme: Orjinal HTML'i restore et ve tam 1 kez kopyala
         row.innerHTML = row.dataset.originalHtml;
         row.dataset.isCloned = "true";
 
@@ -258,8 +279,7 @@ const setupAutoScroll = () => {
         let resumeTimeout = null;
 
         const animate = () => {
-            // Masaüstüne geçilirse animasyon döngüsünü kır
-            if (window.innerWidth > 1050) return;
+            if (window.innerWidth > 1050 && window.innerHeight > 600) return;
 
             if (!isInteracting) {
                 currentScroll += speed * direction;
@@ -333,10 +353,8 @@ const setupAutoScroll = () => {
     });
 };
 
-// Sayfa ilk açıldığında çalıştır
 setupAutoScroll();
 
-// Resize tetiklenmesini 'debounce' ederek katlanmasını engelle
 let resizeTimer;
 window.addEventListener("resize", () => {
     clearTimeout(resizeTimer);
@@ -352,7 +370,6 @@ window.addEventListener("resize", () => {
 const hashtagHandler = (event) => {
     const clickedText = event.currentTarget.textContent.trim();
 
-    // #All Feedbacks butonuna basıldığında
     if (clickedText === "#All Feedbacks") {
         resetForm();
         fetchFeedbacks();
@@ -369,12 +386,10 @@ const hashtagHandler = (event) => {
     moveCursorAfterHashtag();
     updateCounter();
 
-    // Seçilen şirkete göre listeyi filtrele
     const company = selectedHashtag.substring(1).trim();
     fetchFeedbacks(company);
 };
 
-// Dinamik kopyalanan hashtag butonlarını da kapsayacak şekilde event delegation kullanımı
 document.addEventListener("click", (event) => {
     const hashtagBtn = event.target.closest(".hashtag");
     if (hashtagBtn) {
@@ -526,7 +541,8 @@ const submitHandler = async (event) => {
             newFeedback.company,
             newFeedback.badge_letter,
             newFeedback.text,
-            newFeedback.upvotes
+            newFeedback.upvotes,
+            newFeedback.created_at || newFeedback.createdAt
         );
 
         feedbackListEl.insertAdjacentHTML("afterbegin", feedbackHTML);
