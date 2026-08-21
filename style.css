@@ -69,51 +69,6 @@ button {
     }
 }
 
-@keyframes rotateIcon {
-    0%, 10% {
-        transform: rotate(90deg);
-    }
-    50%, 60% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(90deg);
-    }
-}
-
-/* LANDSCAPE WARNING OVERLAY */
-.landscape-warning {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    height: 100dvh;
-    background-color: #121618;
-    z-index: 99999;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    text-align: center;
-}
-
-.landscape-warning__icon {
-    font-size: 42px;
-    color: #fff;
-    margin-bottom: 16px;
-    animation: rotateIcon 2.5s infinite ease-in-out;
-}
-
-.landscape-warning__text {
-    color: rgba(255, 255, 255, 0.85);
-    font-size: 15px;
-    font-weight: 500;
-    line-height: 1.4;
-    max-width: 320px;
-}
-
 /* BASE & RESPONSIVE HEIGHT DÜZENLEMESİ */
 .body {
     background-image: linear-gradient(200deg, #654a86, #534292);
@@ -665,13 +620,6 @@ button {
 
 /* MEDIA QUERIES (RESPONSIVE DÜZENLEMELER) */
 
-/* MOBİL VE TABLETLERDE LANDSCAPE ALGILAMA */
-@media (max-height: 500px) and (orientation: landscape) {
-    .landscape-warning {
-        display: flex;
-    }
-}
-
 @media (max-height: 900px) and (min-width: 1051px) {
     .body__container {
         height: 92vh;
@@ -728,7 +676,7 @@ button {
         overflow-y: hidden;
         scrollbar-width: none;
         -webkit-overflow-scrolling: touch;
-        touch-action: pan-x pan-y;
+        touch-action: pan-x pan-y; /* Dikey kaydırmaya izin verilerek kilit kaldırıldı */
         cursor: grab;
         transition: transform 0.25s ease, opacity 0.25s ease;
     }
