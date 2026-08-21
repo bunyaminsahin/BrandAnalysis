@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "brandanalysis",
     "public": ".",
     "ignore": [
       "firebase.json",
