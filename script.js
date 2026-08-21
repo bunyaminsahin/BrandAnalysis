@@ -42,7 +42,6 @@ const formatDate = (dateString) => {
 // API İŞLEMLERİ (FETCH / POST / PATCH)
 // ----------------------------------------------------
 
-// 1. Veritabanından Yorumları Çek ve Ekrana Bas (GET)
 const fetchFeedbacks = async (companyName = "") => {
     try {
         let url = API_BASE_URL;
@@ -55,7 +54,6 @@ const fetchFeedbacks = async (companyName = "") => {
 
         const feedbacks = await response.json();
         
-        // Listeyi temizle ve veritabanından gelenleri render et
         feedbackListEl.innerHTML = "";
         feedbacks.forEach((item) => {
             const feedbackHTML = createFeedbackHTML(
@@ -74,10 +72,8 @@ const fetchFeedbacks = async (companyName = "") => {
     }
 };
 
-// Sayfa yüklendiğinde tüm yorumları çek
 fetchFeedbacks();
 
-// 2. Upvote Tıklama Olayı (PATCH)
 feedbackListEl.addEventListener("click", async (event) => {
     const upvoteBtn = event.target.closest(".upvote");
     if (!upvoteBtn) return;
@@ -96,7 +92,6 @@ feedbackListEl.addEventListener("click", async (event) => {
 
         const updatedFeedback = await response.json();
         
-        // Ekrana basılan sayacı güncelle ve butonu pasif yap
         const countEl = upvoteBtn.querySelector(".upvote__count");
         countEl.textContent = updatedFeedback.upvotes;
         upvoteBtn.disabled = true;
@@ -246,10 +241,8 @@ const setupAutoScroll = () => {
             row.dataset.originalHtml = row.innerHTML;
         }
 
-        // Tablet landscape ve küçük ekran tespiti
         const isMobileOrTablet = window.innerWidth <= 1050 || window.innerHeight <= 600;
 
-        // MASAÜSTÜ: Sadece saf/orjinal HTML'i bas ve çık
         if (!isMobileOrTablet) {
             if (row.dataset.isCloned === "true") {
                 row.innerHTML = row.dataset.originalHtml;
@@ -324,6 +317,7 @@ const setupAutoScroll = () => {
         let startScrollLeft = 0;
 
         row.addEventListener("mousedown", (e) => {
+            if (e.pointerType === "touch") return; // Dokunmatik ekranların mousedown tetiklemesini yoksay
             isMouseDown = true;
             startX = e.pageX - row.offsetLeft;
             startScrollLeft = row.scrollLeft;
@@ -331,7 +325,7 @@ const setupAutoScroll = () => {
         });
 
         row.addEventListener("mousemove", (e) => {
-            if (!isMouseDown) return;
+            if (!isMouseDown || e.pointerType === "touch") return;
             const x = e.pageX - row.offsetLeft;
             const walk = (x - startX) * 1.2;
             row.scrollLeft = startScrollLeft - walk;
@@ -487,7 +481,6 @@ textareaEl.addEventListener("input", () => {
     updateCounter();
 });
 
-// 3. Form Gönderme Olayı (POST)
 const submitHandler = async (event) => {
     event.preventDefault();
 

@@ -333,6 +333,7 @@ button {
     background-color: #f7f8f9;
     scrollbar-color: #979ca0 #dbdfe4;
     scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
 }
 
 .feedbacks::-webkit-scrollbar {
@@ -675,7 +676,7 @@ button {
         overflow-y: hidden;
         scrollbar-width: none;
         -webkit-overflow-scrolling: touch;
-        touch-action: pan-x;
+        touch-action: pan-x pan-y; /* Dikey kaydırmaya izin verilerek kilit kaldırıldı */
         cursor: grab;
         transition: transform 0.25s ease, opacity 0.25s ease;
     }
@@ -763,7 +764,6 @@ button {
         padding-right: 15px;
     }
 
-    /* Grid kolon yapısını 4 sütuna çıkararak tarihi dahil ediyoruz */
     .feedback {
         grid-template-columns: 32px 38px 1fr 58px;
         gap: 6px;
@@ -779,7 +779,6 @@ button {
         font-size: 18px;
     }
 
-    /* Görünürlüğü açıp mobil yazı boyutunu ayarlıyoruz */
     .feedback__date {
         display: block;
         font-size: 10px;
