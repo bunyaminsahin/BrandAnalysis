@@ -306,6 +306,7 @@ const setupAutoScroll = () => {
             }, 1200);
         };
 
+        // Dokunmatik cihazlarda yerel (native) kaydırmaya izin ver
         row.addEventListener("touchstart", handleInteractionStart, { passive: true });
         row.addEventListener("touchmove", handleInteractionStart, { passive: true });
         row.addEventListener("touchend", handleInteractionEnd, { passive: true });
@@ -315,11 +316,13 @@ const setupAutoScroll = () => {
             if (isInteracting) currentScroll = row.scrollLeft;
         }, { passive: true });
 
+        // Masaüstü mause sürükleme desteği
         let isMouseDown = false;
         let startX = 0;
         let startScrollLeft = 0;
 
         row.addEventListener("mousedown", (e) => {
+            // Dokunmatik olayları engellememesi için
             if ('ontouchstart' in window && e.pointerType !== 'mouse') return;
             isMouseDown = true;
             startX = e.pageX - row.offsetLeft;
