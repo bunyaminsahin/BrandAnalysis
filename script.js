@@ -332,7 +332,6 @@ const setupAutoScroll = () => {
 
         row.addEventListener("mousemove", (e) => {
             if (!isMouseDown) return;
-            e.preventDefault();
             const x = e.pageX - row.offsetLeft;
             const walk = (x - startX) * 1.2;
             row.scrollLeft = startScrollLeft - walk;
