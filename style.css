@@ -627,30 +627,31 @@ button {
     }
 }
 
-/* TABLET VE MOBİL (1050px ve altı) */
-@media (max-width: 1050px) {
+/* TABLET VE MOBİL (1050px ve altı VEYA Yan Çevrildiğinde Yükseklik <= 600px) */
+@media (max-width: 1050px), (max-height: 600px) {
     .body {
-        align-items: stretch;
+        align-items: flex-start;
         padding: 0;
+        overflow-y: auto;
     }
 
     .body__container {
         flex-direction: column;
-        height: 100vh;
-        height: 100dvh;
-        max-height: 100dvh;
+        height: auto;
+        min-height: 100dvh;
+        max-height: none;
         width: 100%;
         max-width: 715px;
         margin: 0 auto;
-        justify-content: space-between;
-        padding-bottom: calc(2px + env(safe-area-inset-bottom));
+        justify-content: flex-start;
+        padding-bottom: 60px;
     }
 
     .app {
         width: 100%;
         flex-grow: 1;
         min-height: 0;
-        overflow: hidden;
+        overflow: visible;
     }
 
     /* Mobilde Hashtags Kapsayıcısı */
@@ -676,7 +677,7 @@ button {
         overflow-y: hidden;
         scrollbar-width: none;
         -webkit-overflow-scrolling: touch;
-        touch-action: pan-x pan-y; /* Dikey kaydırmaya izin verilerek kilit kaldırıldı */
+        touch-action: pan-x pan-y;
         cursor: grab;
         transition: transform 0.25s ease, opacity 0.25s ease;
     }

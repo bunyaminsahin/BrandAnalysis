@@ -307,7 +307,10 @@ const setupAutoScroll = () => {
         };
 
         row.addEventListener("touchstart", handleInteractionStart, { passive: true });
+        row.addEventListener("touchmove", handleInteractionStart, { passive: true });
         row.addEventListener("touchend", handleInteractionEnd, { passive: true });
+        row.addEventListener("touchcancel", handleInteractionEnd, { passive: true });
+
         row.addEventListener("scroll", () => {
             if (isInteracting) currentScroll = row.scrollLeft;
         }, { passive: true });
@@ -317,7 +320,7 @@ const setupAutoScroll = () => {
         let startScrollLeft = 0;
 
         row.addEventListener("mousedown", (e) => {
-            if (e.pointerType === "touch") return; // Dokunmatik ekranların mousedown tetiklemesini yoksay
+            if ('ontouchstart' in window && e.pointerType !== 'mouse') return;
             isMouseDown = true;
             startX = e.pageX - row.offsetLeft;
             startScrollLeft = row.scrollLeft;
@@ -325,19 +328,22 @@ const setupAutoScroll = () => {
         });
 
         row.addEventListener("mousemove", (e) => {
-            if (!isMouseDown || e.pointerType === "touch") return;
+            if (!isMouseDown) return;
+            e.preventDefault();
             const x = e.pageX - row.offsetLeft;
-            const walk = (x - startX) * 1.2;
+            const walk = (x - startX) * 1.5;
             row.scrollLeft = startScrollLeft - walk;
             currentScroll = row.scrollLeft;
         });
 
         row.addEventListener("mouseup", () => {
+            if (!isMouseDown) return;
             isMouseDown = false;
             handleInteractionEnd();
         });
 
         row.addEventListener("mouseleave", () => {
+            if (!isMouseDown) return;
             isMouseDown = false;
             handleInteractionEnd();
         });
@@ -543,7 +549,7 @@ const submitHandler = async (event) => {
         resetForm();
     } catch (error) {
         console.error("Submit error:", error);
-        showInvalid("⚠️ Sunucuya kaydedilemedi.");
+        showInvalid("⚠️ Error occurred while submitting.");
     }
 };
 
