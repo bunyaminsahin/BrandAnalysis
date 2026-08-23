@@ -1,15 +1,25 @@
-name: Deploy to Firebase Hosting on PR
-on: pull_request
+name: Firebase Preview on Pull Request
+
+on:
+  pull_request:
+    branches:
+      - main
+
 permissions:
   checks: write
   contents: read
-  pull_requests: write
+  pull-requests: write
+
 jobs:
   build_and_preview:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy preview
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_BRANDANALYSIS_12944 }}'
