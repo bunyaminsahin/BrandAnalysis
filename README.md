@@ -271,4 +271,8 @@ This project helped me apply and integrate:
 
 Bünyamin Şahin
 
+<<<<<<< HEAD
 Software Developer focused on building production-oriented web applications and expanding into backend development and DevOps practices.
+=======
+Software Developer focused on building production-oriented web applications and expanding into backend development and DevOps practices.
+>>>>>>> b4378a9 (docs: integrate Swagger UI and JSDoc API documentation)
