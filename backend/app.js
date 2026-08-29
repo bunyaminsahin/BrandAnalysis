@@ -3,12 +3,70 @@ const cors = require('cors');
 const pool = require('./db');
 require('dotenv').config();
 
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./swagger');   
+
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-// 1. Feedback'leri Getir (Filtreli veya Tümünü)
+// Swagger Arayüzü
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Feedback:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           example: 1
+ *         company:
+ *           type: string
+ *           example: "Google"
+ *         badge_letter:
+ *           type: string
+ *           example: "G"
+ *         text:
+ *           type: string
+ *           example: "Harika bir çalışma ortamı."
+ *         upvotes:
+ *           type: integer
+ *           example: 5
+ *         created_at:
+ *           type: string
+ *           format: date-time
+ *           example: "2026-08-28T20:00:00.000Z"
+ */
+
+/**
+ * @swagger
+ * /api/feedbacks:
+ *   get:
+ *     summary: Feedback'leri getir (Filtreli veya tümü)
+ *     tags: [Feedbacks]
+ *     parameters:
+ *       - in: query
+ *         name: company
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: Şirket adına göre filtreleme yapar
+ *     responses:
+ *       200:
+ *         description: Feedback listesi başarıyla getirildi
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Feedback'
+ *       500:
+ *         description: Sunucu hatası
+ */
 app.get('/api/feedbacks', async (req, res) => {
     try {
         const { company } = req.query;
@@ -30,7 +88,44 @@ app.get('/api/feedbacks', async (req, res) => {
     }
 });
 
-// 2. Yeni Feedback Ekle
+/**
+ * @swagger
+ * /api/feedbacks:
+ *   post:
+ *     summary: Yeni bir feedback ekle
+ *     tags: [Feedbacks]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - company
+ *               - badgeLetter
+ *               - text
+ *             properties:
+ *               company:
+ *                 type: string
+ *                 example: "Apple"
+ *               badgeLetter:
+ *                 type: string
+ *                 example: "A"
+ *               text:
+ *                 type: string
+ *                 example: "Kullanıcı deneyimi çok başarılı."
+ *     responses:
+ *       201:
+ *         description: Feedback başarıyla oluşturuldu
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Feedback'
+ *       400:
+ *         description: Eksik alanlar var
+ *       500:
+ *         description: Sunucu hatası
+ */
 app.post('/api/feedbacks', async (req, res) => {
     try {
         const { company, badgeLetter, text } = req.body;
@@ -51,7 +146,31 @@ app.post('/api/feedbacks', async (req, res) => {
     }
 });
 
-// 3. Upvote Artır
+/**
+ * @swagger
+ * /api/feedbacks/{id}/upvote:
+ *   patch:
+ *     summary: Feedback upvote sayısını 1 artır
+ *     tags: [Feedbacks]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Upvote edilecek feedback ID'si
+ *     responses:
+ *       200:
+ *         description: Upvote işlemi başarılı
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Feedback'
+ *       404:
+ *         description: Feedback bulunamadı
+ *       500:
+ *         description: Sunucu hatası
+ */
 app.patch('/api/feedbacks/:id/upvote', async (req, res) => {
     try {
         const { id } = req.params;
